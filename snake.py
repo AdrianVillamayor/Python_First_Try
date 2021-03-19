@@ -16,7 +16,7 @@ MAP_HEIGHT = int(MAP_HEIGHT)
 user = [0, 0]
 lvl = 1
 
-symbols = {"user": '▪', 'fruit': '⌾', 'empty': ' ',
+symbols = {"user": '▪', 'fruit': '⏍', 'empty': ' ',
            'bar': '│', 'top': '⎽', 'bottom': '⎺'}
 
 action = ""
@@ -78,6 +78,10 @@ def draw_map(MAP_HEIGHT, MAP_WIDTH, user, tail):
             for tail_piece in tail:
                 if x == tail_piece[0] and y == tail_piece[1]:
                     symbol = symbols['user']
+                    if(user[0] == tail_piece[0] and user[1] == tail_piece[1]):
+                        return False
+
+
 
             print("{}".format(symbol), end="")
 
@@ -89,7 +93,7 @@ def draw_map(MAP_HEIGHT, MAP_WIDTH, user, tail):
     print("Puntos: {} \n".format(points))
     print("ESC para salir")
 
-    return points
+    return True
 
 
 def resetGame():
@@ -97,7 +101,6 @@ def resetGame():
     global lvl
     global fruits
 
-    user = [0, 0]
     lvl += 1
     fruits = setFruits(lvl)
     print("Nivel {} superado, vamos a por el siguiente". format(lvl))
@@ -106,47 +109,52 @@ def resetGame():
 while True:
     os.system("clear")
 
-    draw_map(MAP_HEIGHT, MAP_WIDTH, user, tail)
+    if draw_map(MAP_HEIGHT, MAP_WIDTH, user, tail) :
 
-    if len(fruits) == 0:
-        resetGame()
+        if len(fruits) == 0:
+            resetGame()
 
+        else:
+            direction = readchar.readkey()
+
+            if direction == "w" or direction == "\x1b[A":
+                tail.insert(0, user.copy())
+                tail = tail[:points]
+
+                actual_y = user[1]
+                user[1] -= 1
+                user[1] %= MAP_HEIGHT
+
+            elif direction == "s" or direction == '\x1b[B':
+                tail.insert(0, user.copy())
+                tail = tail[:points]
+
+                actual_y = user[1]
+                user[1] += 1
+                user[1] %= MAP_HEIGHT
+
+            elif direction == "d" or direction == '\x1b[C':
+                tail.insert(0, user.copy())
+                tail = tail[:points]
+
+                actual_x = user[0]
+                user[0] += 1
+                user[0] %= MAP_WIDTH
+
+            elif direction == "a" or direction == '\x1b[D':
+                tail.insert(0, user.copy())
+                tail = tail[:points]
+
+                actual_x = user[0]
+                user[0] -= 1
+                user[0] %= MAP_WIDTH
+
+            elif direction == '\x1b\x1b':
+                break
     else:
-        direction = readchar.readkey()
+        os.system("clear")
+        print("\n 💀 GAME OVER 💀 \n")
 
-        if direction == "w" or direction == "\x1b[A":
-            tail.insert(0, user.copy())
-            tail = tail[:points]
-
-            actual_y = user[1]
-            user[1] -= 1
-            user[1] %= MAP_HEIGHT
-
-        elif direction == "s" or direction == '\x1b[B':
-            tail.insert(0, user.copy())
-            tail = tail[:points]
-
-            actual_y = user[1]
-            user[1] += 1
-            user[1] %= MAP_HEIGHT
-
-        elif direction == "d" or direction == '\x1b[C':
-            tail.insert(0, user.copy())
-            tail = tail[:points]
-
-            actual_x = user[0]
-            user[0] += 1
-            user[0] %= MAP_WIDTH
-
-        elif direction == "a" or direction == '\x1b[D':
-            tail.insert(0, user.copy())
-            tail = tail[:points]
-
-            actual_x = user[0]
-            user[0] -= 1
-            user[0] %= MAP_WIDTH
-
-        elif direction == '\x1b\x1b':
-            break
+        break
 
 print("End Game")
