@@ -12,7 +12,6 @@ class Pokemon:
         self.defense = defense
         self.speed = speed
         self.attacks = attaks
-    pass
 
     def turn(self):
         print("----------------\n")
